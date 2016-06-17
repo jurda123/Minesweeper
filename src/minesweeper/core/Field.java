@@ -2,6 +2,8 @@ package minesweeper.core;
 
 import java.util.Random;
 
+import minesweeper.core.Tile.State;
+
 /**
  * Field represents playing field and game logic.
  */
@@ -64,7 +66,7 @@ public class Field {
 		Tile tile = tiles[row][column];
 		if (tile.getState() == Tile.State.CLOSED) {
 			tile.setState(Tile.State.OPEN);
-			if (tile instanceof Clue && ((Clue)tile).getValue()== 0){
+			if (tile instanceof Clue && ((Clue) tile).getValue() == 0) {
 				openAdjacentTiles(row, column);
 			}
 			if (tile instanceof Mine) {
@@ -72,10 +74,10 @@ public class Field {
 				return;
 			}
 
-			 if (isSolved()) {
-			 state = GameState.SOLVED;
-			 return;
-			 }
+			if (isSolved()) {
+				state = GameState.SOLVED;
+				return;
+			}
 		}
 	}
 
@@ -91,8 +93,7 @@ public class Field {
 		Tile tile = tiles[row][column];
 		if (tile.getState() == Tile.State.CLOSED) {
 			tile.setState(Tile.State.MARKED);
-		}
-		else if (tile.getState() == Tile.State.MARKED) {
+		} else if (tile.getState() == Tile.State.MARKED) {
 			tile.setState(Tile.State.CLOSED);
 
 		}
@@ -111,11 +112,11 @@ public class Field {
 			if (!((tiles[x][y] instanceof Mine))) {
 				tiles[x][y] = new Mine();
 				minesInserted++;
-				
+
 			}
 
 		}
-		
+
 		for (int i = 0; i < this.getRowCount(); i++) {
 			for (int j = 0; j < this.getColumnCount(); j++) {
 				if (tiles[i][j] == null) {
@@ -126,17 +127,17 @@ public class Field {
 			}
 
 		}
-		//test
-//		for (int i = 0; i < this.getRowCount(); i++) {
-//
-//			for (int j = 0; j < this.getColumnCount(); j++) {
-//				if(tiles[i][j] instanceof Mine){
-//					this.openTile(i, j);
-//				}
-//				
-//			}
-//
-//		}
+		// test
+		// for (int i = 0; i < this.getRowCount(); i++) {
+		//
+		// for (int j = 0; j < this.getColumnCount(); j++) {
+		// if(tiles[i][j] instanceof Mine){
+		// this.openTile(i, j);
+		// }
+		//
+		// }
+		//
+		// }
 
 	}
 
@@ -146,22 +147,23 @@ public class Field {
 	 * @return true if game is solved, false otherwise
 	 */
 	public boolean isSolved() {
-		if ((getColumnCount()*getRowCount()) - this.getNumberOf(Tile.State.OPEN) == getMineCount()){
+		if ((getColumnCount() * getRowCount())
+				- this.getNumberOf(Tile.State.OPEN) == getMineCount()) {
 			return true;
 		}
 		return false;
 	}
-	
-	public int getNumberOf(Tile.State state){
-		int count=0;
+
+	public int getNumberOf(Tile.State state) {
+		int count = 0;
 		for (int i = 0; i < this.getRowCount(); i++) {
 			for (int j = 0; j < this.getColumnCount(); j++) {
-				if(tiles[i][j].getState() == state){
+				if (tiles[i][j].getState() == state) {
 					count++;
 				}
 			}
 		}
-		return  count;
+		return count;
 	}
 
 	/**
@@ -221,8 +223,8 @@ public class Field {
 		Tile tile = tiles[row][column];
 		return tile;
 	}
-	
-	void openAdjacentTiles(int row, int column){
+
+	private void openAdjacentTiles(int row, int column) {
 		for (int rowOffset = -1; rowOffset <= 1; rowOffset++) {
 			int actRow = row + rowOffset;
 			if (actRow >= 0 && actRow < rowCount) {
@@ -235,5 +237,17 @@ public class Field {
 			}
 		}
 	}
-			
+
+	public int getRemainingMineCount() {
+		int count = 0;
+		for (int i = 0; i < this.getRowCount(); i++) {
+			for (int j = 0; j < this.getColumnCount(); j++) {
+				if (tiles[i][j].getState().equals(State.MARKED)) {
+					count++;
+				}
+			}
+		}
+		return getMineCount() - count;
+	}
+
 }
